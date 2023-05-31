@@ -87,7 +87,26 @@
     </section>
   </main>
 
+
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+    window.TrackJS && window.TrackJS.install({ 
+    token: "35fc652a067e465cb498e23d48c7f560"
+    // for more configuration options, see https://docs.trackjs.com
+  });
+
+  </script>
+                        
+
+  <script>
+
+    class DivisionByZeroError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "DivisionByZeroError";
+      }
+    }
+
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -95,13 +114,125 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
+
+      try {
+        if (operator === '/' && secondNum === '0') {
+          throw new DivisionByZeroError("Division by zero is not allowed.");
+        }
+
+      } catch (error) {
+        output.innerHTML = '';
+        console.error(error.message);
+
+        if (error instanceof DivisionByZeroError) {
+          console.warn("Please provide a non-zero value for division.");
+        }
+      } finally {
+        console.log("Calculation completed.");
+      }
+
       output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
     });
+
+    
+    window.onerror = function(message, source, lineno, colno, error) {
+      TrackJS.track('Testing TrackJS!', message);
+    };
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+    // Select the output element
+    let output = document.querySelector('output');
+
+    // Function to log messages to the output
+    function logMessage(message) {
+      output.innerHTML += message + "<br>";
+    }
+
+    // Console Log
+    errorBtns[0].addEventListener('click', () => {
+      console.log("Console log demo");
+    });
+
+    // Console Error
+    errorBtns[1].addEventListener('click', () => {
+      console.error("Console error demo");
+    });
+
+    // Console Count
+    errorBtns[2].addEventListener('click', () => {
+      console.count("Count");
+    });
+
+    // Console Warn
+    errorBtns[3].addEventListener('click', () => {
+      console.warn("Console warn demo");
+    });
+
+    // Console Assert
+    errorBtns[4].addEventListener('click', () => {
+      console.assert(false, "Assertion failed: false");
+    });
+
+    // Console Clear
+    errorBtns[5].addEventListener('click', () => {
+      coun = 0
+      console.clear();
+      console.log('Console was cleared')
+    });
+
+    // Console Dir
+    errorBtns[6].addEventListener('click', () => {
+      console.dir(errorBtns[6]);
+    });
+
+    // Console Dirxml
+    errorBtns[7].addEventListener('click', () => {
+      console.dirxml(errorBtns[6]);
+    });
+
+    // Console Group Start
+    errorBtns[8].addEventListener('click', () => {
+      console.group("Group");
+    });
+
+    // Console Group End
+    errorBtns[9].addEventListener('click', () => {
+      console.groupEnd("Group");
+    });
+
+    // Console Table
+    errorBtns[10].addEventListener('click', () => {
+      let data = [
+        { name: 'John', age: 30 },
+        { name: 'Alice', age: 25 },
+        { name: 'Bob', age: 35 }
+      ];
+      console.table(data);
+    });
+
+    // Console Time
+    errorBtns[11].addEventListener('click', () => {
+      console.time("Timer");
+    });
+
+    // Console TimeEnd
+    errorBtns[12].addEventListener('click', () => {
+      console.timeEnd("Timer");
+    });
+
+    // Console Trace
+    errorBtns[13].addEventListener('click', () => {
+      console.trace();
+    });
+
+    // Trigger a Global Error
+    errorBtns[14].addEventListener('click', () => {
+      nonexistentFunction(); // This will trigger an error
+    });
+
   </script>
 </body>
 
